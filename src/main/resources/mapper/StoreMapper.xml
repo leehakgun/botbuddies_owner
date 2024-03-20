@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.smhrd.botbuddies.mapper.StoreMapper">
+<select id="storeListAll" resultType="com.smhrd.botbuddies.entity.Store">
+select store_seq, user_id, store_name, store_addr, store_phone, category_seq, store_desc, tabling_state, state, open_time, end_time from STORES
+</select>
+
+<select id="storeList" parameterType="String" resultType="com.smhrd.botbuddies.entity.Store">
+select store_seq, user_id, store_name, store_addr, store_phone, category_seq, store_desc, tabling_state, state, open_time, end_time from STORES where category_seq = #{id}
+</select>
+
+</mapper>
