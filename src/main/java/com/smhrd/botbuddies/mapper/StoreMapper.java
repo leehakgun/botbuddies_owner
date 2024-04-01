@@ -16,9 +16,6 @@ import com.smhrd.botbuddies.entity.Review;
 public interface StoreMapper {
     public List<Store> storeListAll();
 
-    // public List<Store> storeList(String id);
-
-
     public List<Store> storelist(String id);
 
     public void insertStore(Store store);

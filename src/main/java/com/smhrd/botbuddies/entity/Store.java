@@ -30,7 +30,7 @@ public class Store {
     private String open_time;
     private String end_time;
 
-    private List<String> img_filename;
+    private String img_filename;
     private String user_nick;
 
     private String review_seq;

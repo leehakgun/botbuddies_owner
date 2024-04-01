@@ -3,7 +3,7 @@
 <mapper namespace="com.smhrd.botbuddies.mapper.StoreMapper">
 
 
-<select  id= "storelist" parameterType="String" resultType="com.smhrd.botbuddies.entity.Store">
+<select  id= "storelist" resultType="com.smhrd.botbuddies.entity.Store">
 SELECT s.store_seq, s.store_name, i.img_filename, s.user_id
 FROM STORES s
 JOIN STORE_IMG i ON s.store_seq = i.store_seq

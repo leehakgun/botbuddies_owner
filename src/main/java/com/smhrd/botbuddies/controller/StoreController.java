@@ -31,13 +31,17 @@ public class StoreController {
 
        @RequestMapping("/storelist")
     public List<Store> storelist(@RequestBody Map<String, String> requestData) {
-        System.out.println("들어왔음");
+        System.out.println("들어왔음시작");
         String id = requestData.get("userId");
        
         System.out.println(id);
         
         List<Store> list = mapper.storelist(id); 
-        System.out.println(list.get(0).toString());
+
+        for(Store i : list){
+            System.out.println(i.toString());
+        }
+
         // System.out.println(info.toString());
         
         return list;
