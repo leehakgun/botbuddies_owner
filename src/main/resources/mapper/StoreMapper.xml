@@ -11,7 +11,7 @@ WHERE s.user_id = #{id}
 
 </select>
 
-<select id = "reviewlist" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
+<!-- <select id = "reviewlist" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
 SELECT 
     STORES.store_seq, 
     STORES.store_name, 
@@ -36,7 +36,7 @@ LEFT OUTER JOIN
 WHERE 
     STORES.store_seq = #{store_seq} 
 
-</select>
+</select> -->
 
 <select id="getStoreSeq" parameterType="String" resultType="int">
 select store_seq,store_name from STORES where user_id = #{id}
@@ -61,12 +61,12 @@ select img_filename from REVIEW_IMG where review_seq = #{review_seq};
     VALUES (#{storeSeq}, #{tableNum}, #{tableState});
 </insert>
 
-<select id="reviewList" parameterType="String" resultType="com.smhrd.botbuddies.entity.Review">
+<!-- <select id="reviewList" parameterType="String" resultType="com.smhrd.botbuddies.entity.Review">
 SELECT r.user_id, r.review_seq, r.review_seq, r.store_seq, r.order_num, r.title, r.details, r.answer, ri.img_filename
 FROM REVIEWS r
 INNER JOIN REVIEW_IMG ri ON r.review_seq = ri.review_seq
 WHERE r.store_seq = #{store_seq};
-</select>
+</select> -->
 
 <insert id="inquiry" parameterType="String">
 INSERT INTO INQUIRIES (user_id, title, details)
@@ -92,11 +92,7 @@ JOIN STORES ON USERS.user_id = STORES.user_id -- 여기서는 STORES 테이블�
 LEFT OUTER JOIN REVIEWS ON STORES.store_seq = REVIEWS.store_seq
 LEFT OUTER JOIN REVIEW_IMG ON REVIEWS.review_seq = REVIEW_IMG.review_seq
 WHERE STORES.store_seq = #{store_seq} 
-</select>
-
-<select id="getStoreSeq" parameterType="String" resultType="int">
-select store_seq,store_name from STORES where user_id = #{id}
-</select>
+</select> 
 
 <delete id="deleteStoreSeq" parameterType="int">
 DELETE FROM STORES WHERE store_seq = #{store_seq}

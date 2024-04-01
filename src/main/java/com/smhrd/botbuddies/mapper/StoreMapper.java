@@ -1,6 +1,5 @@
 package com.smhrd.botbuddies.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -8,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.smhrd.botbuddies.entity.Store;
 
-import com.smhrd.botbuddies.entity.StoreR;
+
 
 import com.smhrd.botbuddies.entity.Review;
 
@@ -17,7 +16,7 @@ import com.smhrd.botbuddies.entity.Review;
 public interface StoreMapper {
     public List<Store> storeListAll();
 
-    public List<Store> storeList(String id);
+    // public List<Store> storeList(String id);
 
 
     public List<Store> storelist(String id);
@@ -28,7 +27,6 @@ public interface StoreMapper {
 
     public void insertStoreTable(@Param("storeSeq") Long storeSeq, @Param("tableNum") Integer tableNum, @Param("tableState") String tableState);
 
-    public void reviewList(Review review);
 
     public int inquiry(String id, String title, String details);
 
