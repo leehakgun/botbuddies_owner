@@ -17,7 +17,8 @@ public class StoreR {
     
     private int store_seq;
     private List<Store> storeInfo;
-    private List<String> img_filename;
+   
+
     // 기타 필드와 메소드 생략...
 
     // storeSeq 필드의 getter 메소드
@@ -25,4 +26,6 @@ public class StoreR {
         return this.store_seq;
     }
 
+    
 }
+

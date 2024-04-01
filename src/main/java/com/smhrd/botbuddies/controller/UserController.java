@@ -63,4 +63,41 @@ public class UserController {
 
 
 
+    @RequestMapping("/SignUp")
+    public void SignUp(@RequestBody Map<String, String> requestData) {
+        System.out.println(requestData.get("data"));
+        System.out.println("들어왔음");
+        String id = requestData.get("id");
+        String pw = requestData.get("pw");
+       
+        String name = requestData.get("name");
+        String phone = requestData.get("phone");
+
+        System.out.println(id + pw + name + phone);
+        mapper.signup(id,pw,name,phone); 
+        
+        
+    }
+    @RequestMapping("/idcheck")
+    public int idcheck(@RequestBody Map<String, String> requestData) {
+        System.out.println(requestData.get("data"));
+        String id = requestData.get("id");
+        int cnt1 = mapper.idcheck(id); 
+        if(cnt1 ==0){
+            System.out.println("성콩");
+            return cnt1;
+        }else{
+            System.out.println("넌 못지나간다.");
+            return cnt1;
+        }
+        
+    }
+
+    
+
+
+
+
+
+
 }
