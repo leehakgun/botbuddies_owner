@@ -9,4 +9,66 @@ select store_seq, user_id, store_name, store_addr, store_phone, category_seq, st
 select store_seq, user_id, store_name, store_addr, store_phone, category_seq, store_desc, tabling_state, state, open_time, end_time from STORES where category_seq = #{id}
 </select>
 
+<insert id="insertStore" parameterType="com.smhrd.botbuddies.entity.Store">
+    INSERT INTO STORES (user_id, store_name, store_addr, store_phone, category_seq, store_desc, tabling_state, regi_num, state, open_time, end_time)
+    VALUES (#{user_id}, #{store_name}, #{store_addr}, #{store_phone}, #{category_seq}, #{store_desc}, #{tabling_state}, #{regi_num}, #{state}, #{open_time}, #{end_time});
+</insert>
+
+<insert id="insertStoreImage">
+    INSERT INTO STORE_IMG (store_seq, img_filename)
+    VALUES (#{storeSeq}, #{imgFilename});
+</insert>
+
+<insert id="insertStoreTable">
+    INSERT INTO STORE_TABLE (store_seq, table_num, table_state)
+    VALUES (#{storeSeq}, #{tableNum}, #{tableState});
+</insert>
+
+<select id="reviewList" parameterType="String" resultType="com.smhrd.botbuddies.entity.Review">
+SELECT r.user_id, r.review_seq, r.review_seq, r.store_seq, r.order_num, r.title, r.details, r.answer, ri.img_filename
+FROM REVIEWS r
+INNER JOIN REVIEW_IMG ri ON r.review_seq = ri.review_seq
+WHERE r.store_seq = #{store_seq};
+</select>
+
+<insert id="inquiry" parameterType="String">
+INSERT INTO INQUIRIES (user_id, title, details)
+VALUES (#{id}, #{title}, #{details})
+</insert>
+
+<select id = "reviewlist" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
+SELECT 
+    STORES.store_seq, 
+    STORES.store_name,
+    STORES.user_id, 
+    REVIEWS.user_id as reviewUser_id, 
+    REVIEWS.review_seq, 
+    REVIEWS.title, 
+    REVIEWS.details, 
+    REVIEWS.answer, 
+    REVIEWS.state, 
+    REVIEWS.score, 
+    REVIEWS.create_at, 
+    REVIEW_IMG.img_filename
+FROM USERS
+JOIN STORES ON USERS.user_id = STORES.user_id -- 여기서는 STORES 테이블이 USERS 테이블과 어떻게 연결되는지 정확한 필드를 명시해야 합니다.
+LEFT OUTER JOIN REVIEWS ON STORES.store_seq = REVIEWS.store_seq
+LEFT OUTER JOIN REVIEW_IMG ON REVIEWS.review_seq = REVIEW_IMG.review_seq
+WHERE STORES.store_seq = #{store_seq} 
+</select>
+
+<select id="getStoreSeq" parameterType="String" resultType="int">
+select store_seq,store_name from STORES where user_id = #{id}
+</select>
+
+<delete id="deleteStoreSeq" parameterType="int">
+DELETE FROM STORES WHERE store_seq = #{store_seq}
+</delete>
+
+
+
+<select id="store" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
+select * from STORES where store_seq = #{store_seq}
+</select>
+
 </mapper>

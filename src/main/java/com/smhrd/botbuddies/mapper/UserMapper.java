@@ -10,6 +10,6 @@ import com.smhrd.botbuddies.entity.User;
 public interface UserMapper {
 
     public List<User> selectUser();
-
-
+    public void signup(String id , String pw, String name, String phone);
+    public int idcheck(String id);
 }

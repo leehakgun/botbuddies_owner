@@ -1,7 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.smhrd.botbuddies.mapper.UserMapper">
+
+
 <select id="selectUser" resultType="com.smhrd.botbuddies.entity.User">
 select * from USERS
 </select>
+
+
+<insert id= "signup" >
+INSERT INTO USERS
+(user_id, user_pw, user_name, user_nick, user_phone, user_role)
+VALUES
+(#{id}, md5(#{pw}), #{name}, #{name}, #{phone}, 1);
+</insert>
+
+<select id="idcheck" parameterType="String" resultType="int">
+select count(*) from USERS where user_id=#{id} 
+</select>
+
+
+
 </mapper>
