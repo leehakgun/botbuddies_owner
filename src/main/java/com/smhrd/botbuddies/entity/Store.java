@@ -50,7 +50,7 @@ public class Store {
     }
 
     
-    public Store(int store_seq,String store_name,String user_id,String reviewUserNick , String review_seq,String title,String details,String answer,  String state,String score, String img_filename,String create_at
+    public Store(int store_seq,String store_name,String user_id,String reviewUserNick , String review_seq,String title,String details,String answer,  String state,String score, List<String> img_filename,String create_at
                 ) {
         this.store_seq = store_seq;
         this.reviewUserNick= reviewUserNick;

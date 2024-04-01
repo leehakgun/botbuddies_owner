@@ -15,9 +15,14 @@ import lombok.ToString;
 @AllArgsConstructor
 public class StoreR {
     
+    public StoreR(int store_seq, List<Store> storeInfo) {
+        this.store_seq = store_seq;
+        this.storeInfo = storeInfo;
+    }
+
     private int store_seq;
     private List<Store> storeInfo;
-   
+    private List<String> img_filename;
 
     // 기타 필드와 메소드 생략...
 
