@@ -45,5 +45,22 @@ public class UserController {
         System.out.println(info.toString());
         return  info;
     }
+    @RequestMapping("/homelogin")
+    public User homelogin(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String id = requestData.get("id");
+        String password = requestData.get("password");
+        System.out.println(id);
+        System.out.println(password);
+        User info = mapper.login(id,password); 
+        // System.out.println(info.toString());
+        
+        return info;
+        
+    }
+
+
+
+
 
 }

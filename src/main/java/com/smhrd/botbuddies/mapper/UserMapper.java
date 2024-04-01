@@ -10,6 +10,6 @@ import com.smhrd.botbuddies.entity.User;
 public interface UserMapper {
 
     public List<User> selectUser();
-
+    public User login(String id, String password);
 
 }

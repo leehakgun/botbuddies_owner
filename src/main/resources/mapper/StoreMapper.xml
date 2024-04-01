@@ -1,12 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.smhrd.botbuddies.mapper.StoreMapper">
-<select id="storeListAll" resultType="com.smhrd.botbuddies.entity.Store">
-select store_seq, user_id, store_name, store_addr, store_phone, category_seq, store_desc, tabling_state, state, open_time, end_time from STORES
+
+
+<select  id= "storelist" parameterType="String" resultType="com.smhrd.botbuddies.entity.Store">
+SELECT s.store_seq, s.store_name, i.img_filename, s.user_id
+FROM STORES s
+JOIN STORE_IMG i ON s.store_seq = i.store_seq
+WHERE s.user_id = #{id}
+
 </select>
 
-<select id="storeList" parameterType="String" resultType="com.smhrd.botbuddies.entity.Store">
-select store_seq, user_id, store_name, store_addr, store_phone, category_seq, store_desc, tabling_state, state, open_time, end_time from STORES where category_seq = #{id}
+<select id = "reviewlist" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
+SELECT 
+    STORES.store_seq, 
+    STORES.store_name, 
+    REVIEWS.user_id,
+    USERS.user_nick as reviewUserNick,
+    REVIEWS.review_seq, 
+    REVIEWS.title, 
+    REVIEWS.details, 
+    REVIEWS.answer, 
+    REVIEWS.state, 
+    REVIEWS.score, 
+    REVIEWS.create_at, 
+    REVIEW_IMG.img_filename
+FROM 
+    STORES
+LEFT OUTER JOIN 
+    REVIEWS ON STORES.store_seq = REVIEWS.store_seq
+LEFT OUTER JOIN 
+    USERS ON REVIEWS.user_id = USERS.user_id
+LEFT OUTER JOIN 
+    REVIEW_IMG ON REVIEWS.review_seq = REVIEW_IMG.review_seq
+WHERE 
+    STORES.store_seq = #{store_seq} 
+
+</select>
+
+<select id="getStoreSeq" parameterType="String" resultType="int">
+select store_seq,store_name from STORES where user_id = #{id}
+</select>
+
+<select id = "imgsearch" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
+select img_filename from REVIEW_IMG where review_seq = #{review_seq};
 </select>
 
 </mapper>
