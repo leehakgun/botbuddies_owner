@@ -35,6 +35,7 @@ public class Store {
     private String create_at;
     private String reviewUserNick;
     private String reviewImageFilenames;
+    private String table_nums;
 
 
     public Store(int store_seq, String store_name, String img_filename, String user_id) {
