@@ -8,35 +8,8 @@ SELECT s.store_seq, s.store_name, i.img_filename, s.user_id
 FROM STORES s
 JOIN STORE_IMG i ON s.store_seq = i.store_seq
 WHERE s.user_id = #{id}
-
 </select>
 
-<!-- <select id = "reviewlist" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
-SELECT 
-    STORES.store_seq, 
-    STORES.store_name, 
-    REVIEWS.user_id,
-    USERS.user_nick as reviewUserNick,
-    REVIEWS.review_seq, 
-    REVIEWS.title, 
-    REVIEWS.details, 
-    REVIEWS.answer, 
-    REVIEWS.state, 
-    REVIEWS.score, 
-    REVIEWS.create_at, 
-    REVIEW_IMG.img_filename
-FROM 
-    STORES
-LEFT OUTER JOIN 
-    REVIEWS ON STORES.store_seq = REVIEWS.store_seq
-LEFT OUTER JOIN 
-    USERS ON REVIEWS.user_id = USERS.user_id
-LEFT OUTER JOIN 
-    REVIEW_IMG ON REVIEWS.review_seq = REVIEW_IMG.review_seq
-WHERE 
-    STORES.store_seq = #{store_seq} 
-
-</select> -->
 
 <select id="getStoreSeq" parameterType="String" resultType="int">
 select store_seq,store_name from STORES where user_id = #{id}
@@ -285,5 +258,125 @@ GROUP BY
   REVIEWS.review_seq;
 </select> 
 
+<insert id="insertStore" parameterType="com.smhrd.botbuddies.entity.RegisterStore"
+        useGeneratedKeys="true" keyProperty="store_seq">
+    INSERT INTO STORES 
+        (store_name, store_addr, store_phone, category_seq, store_desc, regi_num, open_time, end_time, user_id, tabling_state)
+    VALUES
+        (#{store_name}, #{store_addr}, #{store_phone}, #{category_seq}, #{store_desc}, #{regiNum}, #{open_time}, #{end_time}, #{user_id}, #{tabling_state});
+</insert>
+
+<insert id="insertStoreImage">
+    INSERT INTO STORE_IMG (img_filename, store_seq)
+    VALUES (#{imgFilename}, #{store_seq})
+</insert>
+
+<insert id="insertStoreTable">
+    INSERT INTO STORE_TABLE (table_num, store_seq)
+    VALUES (#{tableNum}, #{store_seq})
+</insert>
+
+<select id="selectStoreDetails" resultType="com.smhrd.botbuddies.entity.Store">
+    SELECT 
+    s.store_seq, 
+    s.store_name, 
+    s.store_addr, 
+    s.store_phone, 
+    s.category_seq, 
+    s.store_desc, 
+    s.open_time, 
+    s.end_time,
+    s.regi_num,
+    s.tabling_state,
+    s.reserva_state,
+    s.open_date,
+    s.user_id,
+    i.img_filename,
+    GROUP_CONCAT(t.table_num) AS table_nums 
+FROM STORES s
+LEFT JOIN STORE_IMG i ON s.store_seq = i.store_seq
+LEFT JOIN STORE_TABLE t ON s.store_seq = t.store_seq
+WHERE s.store_seq = #{store_seq}
+GROUP BY s.store_seq, i.IMG_FILENAME
+</select>
+
+<update id="updateStore">
+    UPDATE STORES
+    SET store_name = #{store_name},
+        store_addr = #{store_addr},
+        store_phone = #{store_phone},
+        category_seq = #{category_seq},
+        store_desc = #{store_desc},
+        tabling_state = #{tabling_state},
+        reserva_state = #{reserva_state},
+        open_time = #{open_time},
+        end_time = #{end_time}
+    WHERE store_seq = #{store_seq}
+</update>
+
+<delete id="deleteStoreImagesByStoreSeq" parameterType="int">
+    DELETE FROM STORE_IMG
+    WHERE store_seq = #{store_seq}
+</delete>
+
+<delete id="deleteStoreTablesByStoreSeq" parameterType="int">
+    DELETE FROM STORE_TABLE
+    WHERE store_seq = #{store_seq}
+</delete>
+
+<select id="storename" resultType ="com.smhrd.botbuddies.entity.RegisterStore">
+SELECT store_seq, store_name
+FROM STORES
+WHERE user_id = #{user_id}
+</select>
+
+<select id="storemenu" resultType ="com.smhrd.botbuddies.entity.RegisterStore">
+SELECT
+    menu_img,
+    menu_name,
+    price,
+    menu_desc,
+    menu_seq,
+    menu_state
+FROM
+    MENUS
+WHERE
+    store_seq = #{store_seq}
+</select>
+
+<update id="menustate">
+UPDATE MENUS
+SET menu_state = CASE 
+    WHEN menu_state = '0' THEN '1'
+    ELSE '0' END
+WHERE menu_seq = #{menu_seq}
+</update>
+
+<select id="selectmenustate" resultType="java.lang.String">
+SELECT menu_state
+FROM MENUS
+WHERE menu_seq = #{menu_seq}
+</select>
+
+<update id="updatemenu">
+UPDATE MENUS
+SET 
+    menu_name = #{menu_name},
+    menu_desc = #{menu_desc},
+    price = #{price},
+    menu_img = #{menu_img}
+WHERE
+    menu_seq = #{menu_seq};
+</update>
+
+<delete id="deletemenu">
+DELETE FROM MENUS
+WHERE menu_seq = #{menu_seq};
+</delete>
+
+<insert id="insertmenu">
+INSERT INTO MENUS (store_seq, menu_name, menu_desc, price, menu_img)
+VALUES (#{store_seq}, #{menu_name}, #{menu_desc}, #{price}, #{menu_img});
+</insert>
 
 </mapper>
