@@ -49,23 +49,6 @@ public class StoreController {
     }
 
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerStore(@RequestBody Store store) {
-        System.out.println(store);
-        mapper.insertStore(store);
-    
-        // 추가적으로 StoreImage, StoreTable 정보 처리
-        return ResponseEntity.ok("Store registered successfully");
-    }
-
-    // @PostMapping("/review")
-    // public ResponseEntity<String> registerStore(@RequestBody Review review) {
-    //     System.out.println(review);
-    //     mapper.reviewList(review);
-    
-    //     // 추가적으로 StoreImage, StoreTable 정보 처리
-    //     return ResponseEntity.ok("Store registered successfully");
-    // }
 
     @RequestMapping("/inquiry")
     public int inquiry(@RequestBody Map<String, String> requestData) {
@@ -161,9 +144,98 @@ public class StoreController {
         
     }
 
-
-
-
     
+    @RequestMapping("/Deleteanswer")
+    public void Deleteanswer(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String review_seq1 = requestData.get("review_seq");
+        int review_seq = Integer.parseInt(review_seq1);
+        System.out.println("매장 답변"+review_seq);
+
+        mapper.deleteans(review_seq);
+       
+    }
+    @RequestMapping("/insertans")
+    public ArrayList<StoreR> insertans(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String review_seq1 = requestData.get("review_seq");
+        int review_seq = Integer.parseInt(review_seq1);
+        System.out.println("매장 식별자"+review_seq);
+        String answer = requestData.get("answer");
+        System.out.println("사장 답변"+answer);
+        mapper.insertans(answer,review_seq);
+
+        String id = requestData.get("user_id");
+
+        List<Integer> storeSeq =  mapper.getStoreSeq(id);
+
+        ArrayList<StoreR> storeRList = new ArrayList<>();
+
+
+        for(int store_seq : storeSeq ){
+            List<Store> review = mapper.reviewlist(store_seq);
+            List<String> img_filename = new ArrayList<>();
+             img_filename = mapper.imgsearch(store_seq);
+            StoreR store = new StoreR(store_seq, review, img_filename);
+
+            storeRList.add(store);
+        }
+
+        System.out.println(storeRList);
+
+        return storeRList;
+       
+    }
+
+    @RequestMapping("/updateans")
+    public ArrayList<StoreR> updateans(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String review_seq1 = requestData.get("review_seq");
+        int review_seq = Integer.parseInt(review_seq1);
+        System.out.println("매장 식별자"+review_seq);
+        String answer = requestData.get("answer");
+        System.out.println("사장 답변"+answer);
+        mapper.insertans(answer,review_seq);
+
+        String id = requestData.get("user_id");
+
+        List<Integer> storeSeq =  mapper.getStoreSeq(id);
+
+        ArrayList<StoreR> storeRList = new ArrayList<>();
+
+
+        for(int store_seq : storeSeq ){
+            List<Store> review = mapper.reviewlist(store_seq);
+            List<String> img_filename = new ArrayList<>();
+             img_filename = mapper.imgsearch(store_seq);
+            StoreR store = new StoreR(store_seq, review, img_filename);
+
+            storeRList.add(store);
+        }
+
+        System.out.println(storeRList);
+
+        return storeRList;
+       
+    }
+    @RequestMapping("/search_review")
+    public List<Review> search_review(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String startDate = requestData.get("startDate");
+        String endDate = requestData.get("endDate");
+        String store_seq1 = requestData.get("store_seq");
+        int store_seq = Integer.parseInt(store_seq1);
+        System.out.println("시작"+startDate);
+        System.out.println("끝"+endDate);
+        System.out.println("매장 식별자"+store_seq);
+
+        List<Review> searchReview = mapper.searchrv(startDate,endDate,store_seq);
+
+        return searchReview;
+       
+    }
+    
+
+
 
 }
