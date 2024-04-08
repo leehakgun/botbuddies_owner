@@ -23,5 +23,7 @@ public class Review {
     private String state;
     private int score;
     private String img_filename;
+    private String user_nick;
+   
     
 }

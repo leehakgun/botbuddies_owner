@@ -32,7 +32,7 @@ public class Store {
 
     private String img_filename;
     private String user_nick;
-
+   
     private String review_seq;
     private String title;
     private String details;
@@ -40,9 +40,9 @@ public class Store {
     private String score;
     private String create_at;
     private String reviewUserNick;
+    private String reviewImageFilenames;
 
-
-    public Store(int store_seq, String store_name, List<String> img_filename, String user_id) {
+    public Store(int store_seq, String store_name, String img_filename, String user_id) {
         this.store_seq = store_seq;
         this.store_name = store_name;
         this.img_filename = img_filename;
@@ -50,7 +50,7 @@ public class Store {
     }
 
     
-    public Store(int store_seq,String store_name,String user_id,String reviewUserNick , String review_seq,String title,String details,String answer,  String state,String score, List<String> img_filename,String create_at
+    public Store(int store_seq,String store_name,String user_id,String reviewUserNick , String review_seq,String title,String details,String answer,  String state,String score, String img_filename,String create_at
                 ) {
         this.store_seq = store_seq;
         this.reviewUserNick= reviewUserNick;
@@ -111,5 +111,6 @@ public class Store {
         this.store_name = store_name;
     }
 
+  
 
 }

@@ -6,9 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.smhrd.botbuddies.entity.Store;
-
-
-
+import com.smhrd.botbuddies.entity.StoreR;
 import com.smhrd.botbuddies.entity.Review;
 
 
@@ -18,11 +16,7 @@ public interface StoreMapper {
 
     public List<Store> storelist(String id);
 
-    public void insertStore(Store store);
-    
-    public void insertStoreImage(@Param("storeSeq") Long storeSeq, @Param("imgFilename") String imgFilename);
 
-    public void insertStoreTable(@Param("storeSeq") Long storeSeq, @Param("tableNum") Integer tableNum, @Param("tableState") String tableState);
 
 
     public int inquiry(String id, String title, String details);
@@ -43,5 +37,14 @@ public interface StoreMapper {
     public List<Store> list(String user_id);
     
     public List<Store> store(int store_seq);
+
+    public void deleteans(int reivew_seq);
+
+    public void insertans(String answer, int review_seq);
+
+    public void updateans(String answer, int review_seq);
+
+    public List<Review> searchrv(String startDate, String endDate, int store_seq);
+
 };
 
