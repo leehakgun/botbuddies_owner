@@ -281,6 +281,19 @@ public class StoreController {
 
         ArrayList<StoreR> storeRList = new ArrayList<>();
 
+        for(int store_seq : storeSeq ){
+            List<Store> review = mapper.reviewlist(store_seq);
+            List<String> img_filename = new ArrayList<>();
+             img_filename = mapper.imgsearch(store_seq);
+            StoreR store = new StoreR(store_seq, review, img_filename);
+
+            storeRList.add(store);
+        }
+
+        System.out.println(storeRList);
+
+        return storeRList;
+    }
 
     @RequestMapping("/minustable")
     public void minustable(@RequestBody Map<String, String> requestData) {
@@ -301,7 +314,7 @@ public class StoreController {
             mapper.minustable(tablesu,store_seq, table_num);
         }
         
-    }
+    };
 
     @RequestMapping("/plustable")
     public void plustable(@RequestBody Map<String, String> requestData) {
@@ -323,22 +336,7 @@ public class StoreController {
         }else {
             mapper.plustable(state-2,store_seq, table_num);
         }        
-        
-    }
-        for(int store_seq : storeSeq ){
-            List<Store> review = mapper.reviewlist(store_seq);
-            List<String> img_filename = new ArrayList<>();
-             img_filename = mapper.imgsearch(store_seq);
-            StoreR store = new StoreR(store_seq, review, img_filename);
-
-            storeRList.add(store);
-        }
-
-        System.out.println(storeRList);
-
-        return storeRList;
-       
-    }
+    };
 
     @RequestMapping("/updateans")
     public ArrayList<StoreR> updateans(@RequestBody Map<String, String> requestData) {
