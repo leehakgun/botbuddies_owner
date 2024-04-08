@@ -101,7 +101,163 @@ DELETE FROM STORES WHERE store_seq = #{store_seq}
 
 
 <select id="store" parameterType="int" resultType="com.smhrd.botbuddies.entity.Store">
-select * from STORES where store_seq = #{store_seq}
+SELECT s.store_seq, s.store_name,s.store_desc, i.img_filename
+FROM STORES s
+JOIN STORE_IMG i ON s.store_seq = i.store_seq
+WHERE s.store_seq = #{store_seq}
+</select>
+
+<select id="reserveList" resultType="com.smhrd.botbuddies.entity.Reservation">
+select * from RESERVATIONS where store_seq = #{store_seq} 
+and now() &lt; reserve_date
+order by reserve_date, reserve_time
+</select>
+
+<select id="orderList" resultType="com.smhrd.botbuddies.entity.Order">
+select o.order_num, GROUP_CONCAT(DISTINCT m.menu_name, o.quantity) AS menu_names, u.user_name, date_format(o.order_at, '%H:%i:%s')  as time
+from ORDERS o
+join MENUS m on o.menu_seq = m.menu_seq 
+join USERS u on o.user_id = u.user_id
+where o.store_seq=#{store_seq}
+and o.state='0'
+and date_format(o.order_at, '%Y-%m-%d') &gt;= date_format(now(), '%Y-%m-%d')
+group by o.order_num, u.user_name, o.order_at
+</select>
+
+<select id="tablingList" resultType="com.smhrd.botbuddies.entity.Tabling">
+select tabling_seq, user_id, wait_num, state, people_num
+from TABLING
+where store_seq=#{store_seq}
+and date_format(create_at, '%Y-%m-%d') &gt;= date_format(now(), '%Y-%m-%d')
+</select>
+
+<select id="tableList" resultType="com.smhrd.botbuddies.entity.storeTable">
+SELECT 
+    table_num, 
+    MAX(store_seq) AS store_seq, 
+    COUNT(*) AS label_count,
+    SUM(CASE WHEN table_state = '1' THEN 1 ELSE 0 END) AS state_count
+FROM 
+    STORE_TABLE
+WHERE 
+    store_seq = #{store_seq}
+GROUP BY 
+    table_num
+ORDER BY 
+    table_num;
+</select>
+
+<select id="getTotal" resultType="int">
+select COALESCE(sum(pay_amount),0) as total_pay from ORDERS 
+where store_seq=#{store_seq}
+and date_format(order_at, '%Y-%m-%d') = date_format(now(), '%Y-%m-%d')
+</select>
+
+<update id= "reserveState" parameterType="int">
+UPDATE RESERVATIONS
+SET state = 1
+WHERE reserve_seq = #{reserve_seq};
+</update>
+
+
+<update id= "reserveStatecancel" parameterType="int">
+UPDATE RESERVATIONS
+SET state = 0
+WHERE reserve_seq = #{reserve_seq};
+</update>
+
+<update id="ordercheck" parameterType="int">
+UPDATE ORDERS
+SET state = 1
+WHERE order_num = #{order_num};
+</update>
+
+<update id="noshow" parameterType="int">
+UPDATE TABLING
+SET state = 3
+WHERE wait_num = #{wait_num};
+</update>
+
+<select id="tablecount" resultType="com.smhrd.botbuddies.entity.TableCount">
+SELECT store_seq, table_num, COUNT(*) AS label_count
+FROM STORE_TABLE
+WHERE store_seq = #{store_seq}
+GROUP BY table_num;
+</select>
+
+
+<update id="all" parameterType="int">
+UPDATE STORE_TABLE 
+SET table_state = 0
+WHERE store_seq = #{store_seq} AND table_num = #{table_num};
+</update>
+
+<update id="minustable" parameterType="int">
+UPDATE STORE_TABLE AS main
+JOIN (
+    SELECT table_seq
+    FROM STORE_TABLE
+    WHERE store_seq = #{store_seq} AND table_num = #{table_num}
+    ORDER BY table_seq DESC
+    LIMIT #{tablesu}
+) AS sub ON main.table_seq = sub.table_seq
+SET main.table_state = 1
+WHERE main.store_seq = #{store_seq} AND main.table_num = #{table_num};
+</update>
+
+<update id="plustable" parameterType="int">
+UPDATE STORE_TABLE AS main
+JOIN (
+    SELECT table_seq
+    FROM STORE_TABLE
+    WHERE store_seq = #{store_seq} AND table_num = #{table_num}
+    ORDER BY table_seq DESC
+    LIMIT #{state}
+) AS sub ON main.table_seq = sub.table_seq
+SET main.table_state = 1
+WHERE main.store_seq = #{store_seq} AND main.table_num = #{table_num};
+
+</update>
+<insert id="sendconfirmation">
+INSERT INTO NOTIFICATIONS (user_id,type,message,state)
+VALUES(#{user_id},1,"예약확정",0)
+</insert>
+
+
+<insert id="sendcancel">
+INSERT INTO NOTIFICATIONS (user_id,type,message,state)
+VALUES(#{user_id},1,"예약취소",0)
+</insert>
+
+<insert id="sendnoshow">
+INSERT INTO NOTIFICATIONS (user_id,type,message,state)
+VALUES(#{user_id},0,"대기노쇼",0)
+</insert>
+
+
+<insert id="sendcomeon">
+INSERT INTO NOTIFICATIONS (user_id,type,message,state)
+VALUES(#{user_id},0,"부르기",0)
+</insert>
+
+<update id="completeStand" parameterType="int">
+UPDATE TABLING
+SET state = 1
+WHERE wait_num = #{wait_num};
+</update>
+
+<insert id="sendstand">
+INSERT INTO NOTIFICATIONS (user_id,type,message,state)
+VALUES(#{user_id},0,"대기완료",0)
+</insert>
+
+<select id="aftersend" resultType="int">
+    SELECT EXISTS (
+    SELECT 1 FROM NOTIFICATIONS
+    WHERE user_id = #{user_id} AND message = '부르기'
+    ORDER BY notice_at DESC
+    LIMIT 1
+) AS result;
 </select>
 
 </mapper>

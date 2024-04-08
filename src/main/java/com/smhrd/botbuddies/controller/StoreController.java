@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.event.TableColumnModelEvent;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smhrd.botbuddies.entity.Store;
 import com.smhrd.botbuddies.entity.StoreR;
-
+import com.smhrd.botbuddies.entity.TableCount;
+import com.smhrd.botbuddies.entity.Tabling;
+import com.smhrd.botbuddies.entity.storeTable;
+import com.smhrd.botbuddies.entity.Order;
+import com.smhrd.botbuddies.entity.Reservation;
 import com.smhrd.botbuddies.entity.Review;
 import com.smhrd.botbuddies.mapper.StoreMapper;
 
@@ -146,24 +152,169 @@ public class StoreController {
 
 
     @RequestMapping("/selectStore")
-    public List<Store> selectStore(@RequestBody Map<String, String> requestData) {
+    public StoreR selectStore(@RequestBody Map<String, String> requestData) {
         System.out.println("들어왔음");
         String store_seq1 = requestData.get("store_seq");
         int store_seq = Integer.parseInt(store_seq1);
         System.out.println("매장 식별자"+store_seq);
 
-        List<Store> selecStores =  mapper.store(store_seq);
+        Store selecStores =  mapper.store(store_seq);
+        List<Reservation> reserveList = mapper.reserveList(store_seq);
 
-        System.out.println("가게 설명"+selecStores);
-        // System.out.println(info.toString());
+        List<Order> orderList = mapper.orderList(store_seq);
+        List<Tabling> tablingList = mapper.tablingList(store_seq);
+        List<storeTable> tableList = mapper.tableList(store_seq);
+        List<TableCount> tablecount = mapper.tablecount(store_seq);
+        int total_pay = mapper.getTotal(store_seq);
         
-        return selecStores;
+        StoreR storeInfo = new StoreR(selecStores, reserveList, orderList, tablingList, tableList, tablecount ,total_pay);
         
+         
+        return storeInfo;
+        
+    }
+
+    @RequestMapping("/reserveState")
+    public List<Reservation> reserveState(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String reserve_seq1 = requestData.get("reserve_seq");
+        int reserve_seq = Integer.parseInt(reserve_seq1);
+        System.out.println("예약 식별자"+reserve_seq);
+        String user_id = requestData.get("user_id");
+        mapper.sendconfirmation(user_id);
+        mapper.reserveState(reserve_seq); 
+
+        String store_seqS = requestData.get("store_seq");
+        int store_seq = Integer.parseInt(store_seqS);
+
+        System.out.println("store_seq"+store_seq);
+
+        List<Reservation> reserveList = mapper.reserveList(store_seq);
+       
+        return reserveList;
+       
+    }
+
+
+    @RequestMapping("/reserveStatecancel")
+    public List<Reservation> reserveStatecancel(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String reserve_seq1 = requestData.get("reserve_seq");
+        int reserve_seq = Integer.parseInt(reserve_seq1);
+        System.out.println("예약 식별자"+reserve_seq);
+        String user_id = requestData.get("user_id");
+
+        String store_seqS = requestData.get("store_seq");
+        int store_seq = Integer.parseInt(store_seqS);
+
+        System.out.println("store_seq"+store_seq);
+        
+        mapper.sendcancel(user_id);
+        mapper.reserveStatecancel(reserve_seq); 
+
+        List<Reservation> reserveList = mapper.reserveList(store_seq);
+       
+        return reserveList;
+    }
+
+
+    @RequestMapping("/ordercheck")
+    public void ordercheck(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String order_num1 = requestData.get("order_num");
+        int order_num = Integer.parseInt(order_num1);
+        System.out.println("주문 식별자"+order_num);
+        
+        mapper.ordercheck(order_num); 
+       
+    }
+
+    @RequestMapping("/noshow")
+    public void noshow(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String wait_num1 = requestData.get("wait_num");
+        int wait_num = Integer.parseInt(wait_num1);
+        System.out.println("주문 식별자"+wait_num);
+        String user_id = requestData.get("user_id");
+
+        mapper.sendnoshow(user_id);
+        mapper.noshow(wait_num); 
+       
+    }
+
+    @RequestMapping("/comeon")
+    public int comeon(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String wait_num1 = requestData.get("wait_num");
+        int wait_num = Integer.parseInt(wait_num1);
+        System.out.println("주문 식별자"+wait_num);
+        String user_id = requestData.get("user_id");
+
+        mapper.sendcomeon(user_id);
+        int cnt = mapper.aftersend(user_id);
+
+        return cnt;
+       
+       
+    }
+
+    @RequestMapping("/completeStand")
+    public void completeStand(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String wait_num1 = requestData.get("wait_num");
+        int wait_num = Integer.parseInt(wait_num1);
+        System.out.println("주문 식별자"+wait_num);
+        String user_id = requestData.get("user_id");
+
+        mapper.completeStand(wait_num);
+       mapper.sendstand(user_id);
+       
     }
 
 
 
+    @RequestMapping("/minustable")
+    public void minustable(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String tablesu1 = requestData.get("tablesu");
+        int tablesu = Integer.parseInt(tablesu1);
+        String store_seq1 = requestData.get("store_seq");
+        int store_seq = Integer.parseInt(store_seq1);
+        String table_num1 = requestData.get("table_num");
+        int table_num = Integer.parseInt(table_num1);
+       
+        System.out.println("리뷰"+tablesu+store_seq+table_num);
+        
+        
+        for (int i = 0; i < tablesu; i++) {
+            // table_num이 반복마다 변해야 한다면, i를 사용하여 table_num을 조정할 수 있습니다.
+            // 예: mapper.minustable(tablesu, store_seq, table_num + i);
+            mapper.minustable(tablesu,store_seq, table_num);
+        }
+        
+    }
 
-    
+    @RequestMapping("/plustable")
+    public void plustable(@RequestBody Map<String, String> requestData) {
+        System.out.println("들어왔음");
+        String tablesu1 = requestData.get("tablesu");
+        int tablesu = Integer.parseInt(tablesu1);
+        String store_seq1 = requestData.get("store_seq");
+        int store_seq = Integer.parseInt(store_seq1);
+        String table_num1 = requestData.get("table_num");
+        int table_num = Integer.parseInt(table_num1);
+        String state1 = requestData.get("state");
+        int state = Integer.parseInt(state1);
+        System.out.println("리뷰"+tablesu+store_seq+table_num+state);
+        
+        mapper.all(store_seq, table_num);
+        if (state == tablesu) {
+            
+            mapper.all(store_seq, table_num);
+        }else {
+            mapper.plustable(state-2,store_seq, table_num);
+        }        
+        
+    }
 
 }
