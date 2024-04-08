@@ -11,6 +11,7 @@ import com.smhrd.botbuddies.entity.Tabling;
 import com.smhrd.botbuddies.entity.storeTable;
 import com.smhrd.botbuddies.entity.Order;
 import com.smhrd.botbuddies.entity.Reservation;
+import com.smhrd.botbuddies.entity.StoreR;
 import com.smhrd.botbuddies.entity.Review;
 
 
@@ -20,11 +21,7 @@ public interface StoreMapper {
 
     public List<Store> storelist(String id);
 
-    public void insertStore(Store store);
-    
-    public void insertStoreImage(@Param("storeSeq") Long storeSeq, @Param("imgFilename") String imgFilename);
 
-    public void insertStoreTable(@Param("storeSeq") Long storeSeq, @Param("tableNum") Integer tableNum, @Param("tableState") String tableState);
 
 
     public int inquiry(String id, String title, String details);
@@ -44,7 +41,7 @@ public interface StoreMapper {
 
     public List<Store> list(String user_id);
     
-    public Store store(int store_seq);
+    public Store store1(int store_seq);
 
     public List<Reservation> reserveList(int store_seq);
 
@@ -89,5 +86,15 @@ public interface StoreMapper {
     
 
     
+    public List<Store> store(int store_seq);
+
+    public void deleteans(int reivew_seq);
+
+    public void insertans(String answer, int review_seq);
+
+    public void updateans(String answer, int review_seq);
+
+    public List<Review> searchrv(String startDate, String endDate, int store_seq);
+
 };
 

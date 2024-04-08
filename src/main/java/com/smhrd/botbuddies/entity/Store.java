@@ -32,7 +32,7 @@ public class Store {
 
     private String img_filename;
     private String user_nick;
-
+   
     private String review_seq;
     private String title;
     private String details;
@@ -40,6 +40,7 @@ public class Store {
     private String score;
     private String create_at;
     private String reviewUserNick;
+    private String reviewImageFilenames;
 
 
     public Store(int store_seq, String store_name, String img_filename, String user_id) {
@@ -112,5 +113,6 @@ public class Store {
     }
 
     
+  
 
 }
